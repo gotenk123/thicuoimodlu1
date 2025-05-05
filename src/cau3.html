@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản Lý Sách</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 16px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+<h2>📚 Quản lý sách</h2>
+<button onclick="addBook()">➕ Thêm sách mới</button>
+
+<table id="bookTable">
+  <thead>
+  <tr>
+    <th>Mã sách</th>
+    <th>Tên sách</th>
+    <th>Năm XB</th>
+    <th>Số quyển</th>
+    <th>Tình trạng</th>
+  </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  class Book {
+    constructor(code, name, year, quantity) {
+      this.code = code;
+      this.name = name;
+      this.year = year;
+      this.quantity = quantity;
+      this.status = quantity > 0;
+    }
+
+    updateStatus() {
+      this.status = this.quantity > 0;
+    }
+
+    getStatusText() {
+      return this.status ? "✅ Còn sách" : "❌ Hết sách";
+    }
+  }
+
+  const library = [];
+
+  function validateCode(code) {
+    return /^[1-5][0-9]{4}$/.test(code);
+  }
+
+  function validateYear(year) {
+    return /^\d{4}$/.test(year) && Number(year) <= new Date().getFullYear();
+  }
+
+  function validateQuantity(quantity) {
+    return /^\d+$/.test(quantity);
+  }
+
+  function addBook() {
+    let code, name, year, quantity;
+
+    do {
+      code = prompt("Nhập mã sách (5 ký tự, bắt đầu từ 1-5):");
+      if (!validateCode(code)) alert("❌ Mã sách không hợp lệ (vd: 10001)");
+    } while (!validateCode(code));
+
+    do {
+      name = prompt("Nhập tên sách:");
+      if (!name || name.trim() === "") alert("❌ Tên sách không được để trống.");
+    } while (!name || name.trim() === "");
+
+    do {
+      year = prompt("Nhập năm xuất bản (4 chữ số):");
+      if (!validateYear(year)) alert("❌ Năm xuất bản không hợp lệ.");
+    } while (!validateYear(year));
+
+    do {
+      quantity = prompt("Nhập số quyển:");
+      if (!validateQuantity(quantity)) alert("❌ Số quyển phải là số nguyên không âm.");
+    } while (!validateQuantity(quantity));
+
+    const book = new Book(code, name, Number(year), Number(quantity));
+    library.push(book);
+    alert("✅ Đã thêm sách thành công!");
+    displayBooks();
+  }
+
+  function displayBooks() {
+    const tbody = document.querySelector("#bookTable tbody");
+    tbody.innerHTML = ""; // Xóa bảng cũ
+
+    library.forEach(book => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+          <td>${book.code}</td>
+          <td>${book.name}</td>
+          <td>${book.year}</td>
+          <td>${book.quantity}</td>
+          <td>${book.getStatusText()}</td>
+        `;
+      tbody.appendChild(row);
+    });
+  }
+</script>
+</body>
+</html>

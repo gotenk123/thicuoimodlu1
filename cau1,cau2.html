@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button onclick="cau1()" />Câu 1
+<button onclick="cau2()" />Câu 2
+<button onclick="cau3()" />Câu 3
+</body>
+<script>
+ // CÂU 1
+ function cau1() {
+   function trungBinhLui() {
+     // Nhập mảng từ bàn phím, sử dụng prompt
+     let n = parseInt(prompt("Nhập số lượng phần tử trong mảng (n <= 50):"));
+     if (n > 50) {
+       console.log("Số lượng phần tử vượt quá giới hạn.");
+       return;
+     }
+
+     let arr = [];
+     for (let i = 0; i < n; i++) {
+       let value = parseInt(prompt(`Nhập phần tử thứ ${i + 1}:`));
+       arr.push(value);
+     }
+
+     // Tính tổng các số lẻ ở vị trí chẵn và đếm số lượng
+     let sum = 0;
+     let count = 0;
+
+     for (let i = 0; i < arr.length; i++) {
+       if (i % 2 === 0 && arr[i] % 2 !== 0) { // Vị trí chẵn và số lẻ
+         sum += arr[i];
+         count++;
+       }
+     }
+
+     // Tính trung bình cộng
+     if (count > 0) {
+       let average = sum / count;
+       document.write(`Trung bình cộng các số lẻ ở vị trí chẵn: ${average}`);
+     } else {
+       document.write("Không có số lẻ ở vị trí chẵn.");
+     }
+   }
+
+   // Gọi hàm để chạy
+   trungBinhLui();
+ }
+ // Câu 2
+  function cau2() {
+    function sumOfDivisors(n) {
+      let sum = 0;
+      for (let i = 1; i <= Math.sqrt(n); i++) {
+        if (n % i === 0) {
+          sum += i;
+          if (i !== 1 && i !== n / i) {
+            sum += n / i;
+          }
+        }
+      }
+      return sum;
+    }
+
+    function areAmicableNumbers(num1, num2) {
+      return sumOfDivisors(num1) === num2 && sumOfDivisors(num2) === num1;
+    }
+    document.write(areAmicableNumbers(220, 284))
+  }
+</script>
+</html>
