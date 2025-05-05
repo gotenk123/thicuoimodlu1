@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>AI LÀ TRIỆU PHÚ</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at center, #001f3f 20%, #000 100%);
+      color: #fff;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      margin-top: 20px;
+      color: #FFD700;
+      font-size: 48px;
+      text-shadow: 2px 2px 10px #00ffcc;
+    }
+
+    #question-box {
+      margin: 30px auto;
+      width: 80%;
+      background-color: rgba(0, 51, 102, 0.8);
+      padding: 20px;
+      border-radius: 25px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+      font-size: 24px;
+      transition: 0.5s;
+    }
+
+    .answer-btn {
+      display: block;
+      width: 80%;
+      margin: 15px auto;
+      padding: 20px;
+      font-size: 26px;
+      background-color: #003366;
+      color: #fff;
+      border: 2px solid #00ffff;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: 0.3s ease-in-out;
+      box-shadow: 0 4px 8px rgba(0, 255, 255, 0.5);
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .answer-btn:hover {
+      background-color: #00cc99;
+      color: #000;
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0, 255, 255, 0.7);
+    }
+
+    #info-bar {
+      display: flex;
+      justify-content: space-between;
+      width: 80%;
+      margin: 20px auto;
+      font-size: 18px;
+    }
+
+    #score, #timer {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 2px solid #00ffff;
+    }
+
+    #result {
+      font-size: 28px;
+      color: #00ffcc;
+      margin-top: 20px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    #logo {
+      display: block;
+      margin: 20px auto;
+      width: 150px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+    }
+
+    #difficulty-select button {
+      background-color: #0055a5;
+      color: #fff;
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 20px;
+      border: 2px solid #00ffff;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    #difficulty-select button:hover {
+      background-color: #007bb5;
+      box-shadow: 0 4px 12px rgba(0, 255, 255, 0.5);
+    }
+
+  </style>
+</head>
+<body>
+<img id="logo" src="https://upload.wikimedia.org/wikipedia/vi/c/cb/ALTP_LOGO_2021.png" alt="Logo Ai là triệu phú" />
+<div id="difficulty-select">
+  <h3>Chọn mức độ:</h3>
+  <button onclick="startGame('easy')">Dễ</button>
+  <button onclick="startGame('medium')">Khó</button>
+  <button onclick="startGame('hard')">Rất khó</button>
+</div>
+
+<div id="game" style="display: none;">
+  <div id="question"></div>
+  <div id="answers"></div>
+  <div id="timer"></div>
+  <div id="score">Điểm: 0</div>
+  <div id="result"></div>
+</div>
+
+<script>
+  const questionSets = {
+    easy: [
+      { question: "Thủ đô của Việt Nam là gì?", options: ["Hồ Chí Minh", "Đà Nẵng", "Hà Nội", "Cần Thơ"], correct: 2 },
+      { question: "2 + 2 bằng bao nhiêu?", options: ["3", "4", "5", "22"], correct: 1 },
+      { question: "Trái cây nào sau đây có màu cam?", options: ["Táo", "Cam", "Chuối", "Lê"], correct: 1 },
+      { question: "Loài vật nào sủa 'gâu gâu'?", options: ["Mèo", "Chó", "Gà", "Lợn"], correct: 1 },
+      { question: "Màu của lá cây là gì?", options: ["Xanh", "Đỏ", "Tím", "Vàng"], correct: 0 },
+      { question: "1 tuần có bao nhiêu ngày?", options: ["5", "6", "7", "8"], correct: 2 },
+      { question: "Người ta dùng gì để xem giờ?", options: ["Bút", "Đồng hồ", "Giày", "Xe"], correct: 1 },
+      { question: "Quốc kỳ Việt Nam có màu gì?", options: ["Đỏ vàng", "Xanh trắng", "Đen đỏ", "Trắng xanh"], correct: 0 },
+      { question: "Nước biển có vị gì?", options: ["Ngọt", "Chua", "Mặn", "Không vị"], correct: 2 },
+      { question: "Chữ cái đầu tiên trong bảng chữ cái là?", options: ["A", "B", "C", "D"], correct: 0 }
+    ],
+    medium: [
+      { question: "Ai phát minh ra bóng đèn?", options: ["Tesla", "Edison", "Einstein", "Newton"], correct: 1 },
+      { question: "HTML viết tắt là gì?", options: ["HyperText Markup Language", "HotMail Text", "HighText Machine", "None"], correct: 0 },
+      { question: "Hệ điều hành nào của Microsoft?", options: ["iOS", "Linux", "Windows", "Android"], correct: 2 },
+      { question: "1 mét bằng bao nhiêu cm?", options: ["10", "100", "1000", "1"], correct: 1 },
+      { question: "Châu lục lớn nhất thế giới là?", options: ["Châu Âu", "Châu Á", "Châu Phi", "Châu Mỹ"], correct: 1 },
+      { question: "Ai là cha đẻ của thuyết tương đối?", options: ["Newton", "Einstein", "Bohr", "Galilei"], correct: 1 },
+      { question: "Ngôn ngữ nào phổ biến nhất năm 2024?", options: ["Java", "Python", "JavaScript", "C++"], correct: 2 },
+      { question: "Trái đất quay quanh gì?", options: ["Mặt trăng", "Mặt trời", "Sao Hỏa", "Sao Kim"], correct: 1 },
+      { question: "Hình nào có 4 cạnh bằng nhau?", options: ["Hình tam giác", "Hình tròn", "Hình vuông", "Hình chữ nhật"], correct: 2 },
+      { question: "Bài hát quốc ca Việt Nam tên là?", options: ["Việt Nam quê hương tôi", "Tiến Quân Ca", "Như có Bác Hồ", "Quốc ca"], correct: 1 }
+    ],
+    hard: [
+      { question: "Nguyên tử nào nhẹ nhất?", options: ["Electron", "Proton", "Neutron", "Photon"], correct: 0 },
+      { question: "Tốc độ ánh sáng là?", options: ["300,000 km/s", "150,000 km/s", "30,000 km/s", "1,000,000 km/s"], correct: 0 },
+      { question: "Định lý Pitago áp dụng cho hình gì?", options: ["Hình vuông", "Tam giác vuông", "Hình tròn", "Hình lăng trụ"], correct: 1 },
+      { question: "Nguyên tố nào có ký hiệu là Fe?", options: ["Đồng", "Sắt", "Chì", "Kẽm"], correct: 1 },
+      { question: "Quốc gia đầu tiên đưa người lên Mặt trăng?", options: ["Nga", "Mỹ", "Trung Quốc", "Ấn Độ"], correct: 1 },
+      { question: "Tổng thống đầu tiên của Mỹ là ai?", options: ["Abraham Lincoln", "George Washington", "Thomas Jefferson", "John Adams"], correct: 1 },
+      { question: "Số π xấp xỉ là?", options: ["2.14", "3.14", "4.14", "5.14"], correct: 1 },
+      { question: "Hành tinh lớn nhất hệ mặt trời?", options: ["Trái Đất", "Sao Hỏa", "Sao Mộc", "Sao Thủy"], correct: 2 },
+      { question: "Nhà vật lý nổi tiếng với 'Con mèo' trong vật lý lượng tử?", options: ["Einstein", "Heisenberg", "Schrödinger", "Dirac"], correct: 2 },
+      { question: "Máy bay đầu tiên do ai chế tạo?", options: ["Wright brothers", "Edison", "Tesla", "Bell"], correct: 0 }
+    ]
+  };
+
+  let questions = [];
+  let currentQuestion = 0;
+  let score = 0;
+  let timer;
+  let timeLeft = 60;
+  let basePoints = 20;
+
+  function startGame(difficulty) {
+    questions = questionSets[difficulty];
+    currentQuestion = 0;
+    score = 0;
+    basePoints = 20;
+
+    document.getElementById("difficulty-select").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    document.getElementById("score").textContent = `Điểm: 0`;
+
+    loadQuestion();
+  }
+
+  function startTimer() {
+    timeLeft = 60;
+    document.getElementById("timer").textContent = `⏱️ Thời gian: ${timeLeft}s`;
+
+    timer = setInterval(() => {
+      timeLeft--;
+      document.getElementById("timer").textContent = `⏱️ Thời gian: ${timeLeft}s`;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        gameOver("⏰ Hết giờ! Bạn đã trả lời sai.");
+      }
+    }, 1000);
+  }
+
+  function loadQuestion() {
+    if (currentQuestion >= questions.length) {
+      clearInterval(timer);
+      document.getElementById("question").innerHTML = "🎉 Chúc mừng bạn đã chiến thắng!";
+      document.getElementById("answers").innerHTML = "";
+      document.getElementById("timer").textContent = "";
+      return;
+    }
+
+    const q = questions[currentQuestion];
+    document.getElementById("question").innerHTML = `<h2>Câu ${currentQuestion + 1}: ${q.question}</h2>`;
+    const answersDiv = document.getElementById("answers");
+    answersDiv.innerHTML = "";
+
+    q.options.forEach((option, index) => {
+      const btn = document.createElement("button");
+      btn.textContent = `${String.fromCharCode(65 + index)}. ${option}`; // A, B, C, D
+      btn.classList.add('answer-btn');
+      btn.onclick = () => checkAnswer(index);
+      answersDiv.appendChild(btn);
+    });
+
+    startTimer();
+  }
+
+  function checkAnswer(selected) {
+    clearInterval(timer);
+    const q = questions[currentQuestion];
+    if (selected === q.correct) {
+      score += basePoints;
+      basePoints += 20;
+      document.getElementById("score").textContent = `Điểm: ${score}`;
+      currentQuestion++;
+      loadQuestion();
+    } else {
+      gameOver("❌ Bạn đã trả lời sai.");
+    }
+  }
+
+  function gameOver(message) {
+    document.getElementById("question").innerHTML = message;
+    document.getElementById("answers").innerHTML = "";
+    document.getElementById("timer").textContent = "";
+  }
+</script>
+</body>
+</html>
